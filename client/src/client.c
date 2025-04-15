@@ -44,7 +44,6 @@ int main(void)
 	valor = config_get_string_value(config, "CLAVE");
 	logger = iniciar_logger();
 	log_info(logger, "El valor de CLAVE es: %s", valor);
-	log_destroy(logger);
 	config_destroy(config);
 
 	// Usando el config creado previamente, leemos los valores del config y los 
@@ -54,6 +53,7 @@ int main(void)
 
 	/* ---------------- LEER DE CONSOLA ---------------- */
 
+	// Leer los loggers
 	leer_consola(logger);
 
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
@@ -74,20 +74,6 @@ int main(void)
 	// Proximamente
 }
 
-t_log* iniciar_logger(void)
-{
-	t_log* nuevo_logger;
-
-	return nuevo_logger;
-}
-
-t_config* iniciar_config(void)
-{
-	t_config* nuevo_config;
-
-	return nuevo_config;
-}
-
 void leer_consola(t_log* logger)
 {
 	char* leido;
@@ -97,9 +83,15 @@ void leer_consola(t_log* logger)
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 
+    while (!string_is_empty(leido)) {
+        log_info(logger, "%s", leido);
+        free(leido);
+        leido = readline("> ");
+    }
+
+    free(leido); // liberamos la línea vacía también
 
 	// ¡No te olvides de liberar las lineas antes de regresar!
-
 }
 
 void paquete(int conexion)
@@ -119,4 +111,5 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 {
 	/* Y por ultimo, hay que liberar lo que utilizamos (conexion, log y config) 
 	  con las funciones de las commons y del TP mencionadas en el enunciado */
+	  log_destroy(logger);
 }
